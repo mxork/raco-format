@@ -1,7 +1,7 @@
 #lang info
 
 (define collection "raco-format")
-(define deps '("base"))
+(define deps '("base" "threading-lib" "gui-lib"))
 (define pkg-desc "Format racket source files")
 (define version "0.1")
 (define pkg-authors '(mxork))
