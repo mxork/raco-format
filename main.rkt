@@ -1,15 +1,16 @@
 #lang racket/base
 
-(require framework
-         racket/class
-         racket/port)
+(require racket/class
+         racket/port
+         "text.rkt")
 
 (provide indent-source)
 
 (define (indent-source (the-port (current-input-port)))
   (define the-input (port->string the-port))
-  (define the-text (new racket:text%))
+  (define the-text (new remove-whitespace%))
   (send the-text insert the-input 0)
+  (send the-text remove-trailing-whitespace-all)
   (send the-text tabify-all)
   (void (write-string (send the-text get-text))))
 
@@ -42,5 +43,5 @@
          (with-input-from-file target-file
            (lambda () (with-output-to-string indent-source))))
        (with-output-to-file target-file
-                            (lambda () (write-string output))
-                            #:exists 'truncate/replace))]))
+         (lambda () (write-string output))
+         #:exists 'truncate/replace))]))
