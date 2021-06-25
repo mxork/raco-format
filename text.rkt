@@ -11,7 +11,7 @@
                                                        [end (send this get-end-position)])
       (define first-para (send this position-paragraph start))
       (define end-para (send this position-paragraph end))
-      (define tabifying-multiple-paras? (not (= first-para end-para)))
+      (define modifying-multiple-paras? (not (= first-para end-para)))
       (with-handlers ([exn:break?
                        (λ (x) #t)])
         (dynamic-wind
@@ -25,9 +25,9 @@
                (define start (send this paragraph-start-position para))
                (define end (send this paragraph-end-position para))
                (define skip-this-line?
-                 (and tabifying-multiple-paras?
-                      (for/and ([i (in-range start (+ end 1))])
-                        (char-whitespace? (send this get-character i)))))
+                 (and modifying-multiple-paras?
+                      (for/or ([i (in-range start (+ end 1))])
+                        (char=? #\" (send this get-character i)))))
                (unless skip-this-line?
                  (remove-trailing-whitespace start))
                (parameterize-break #t (void))
@@ -56,3 +56,13 @@
         (send this delete line-start line-end)
         (send this insert (string-trim line #px"\\s+" #:left? #f) end))
       (do-remove (send this get-text line-start line-end)))))
+
+(module+ test
+  (require rackunit)
+
+  (test-case "multi-line string"
+             (define text (new remove-whitespace%))
+             (send text insert "\"test \n\"")
+             (send text remove-trailing-whitespace-all)
+             (check-equal? (send text get-text)
+                           "\"test \n\"")))
