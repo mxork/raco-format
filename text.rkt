@@ -25,7 +25,7 @@
              (when (<= para end-para)
                (define start (send this paragraph-start-position para))
                (define end (send this paragraph-end-position para))
-               (when (char=? #\" (send this get-character start))
+               (when (string-contains? (send this get-text start end) "\"")
                  (set! skip-this-line? (not skip-this-line?)))
                (set! skip-this-line? (and modifying-multiple-paras?
                                           skip-this-line?))
@@ -63,7 +63,7 @@
 
   (test-case "multi-line string"
              (define text (new remove-whitespace%))
-             (send text insert "\"test \ntest  \ntest \n\"")
+             (send text insert " \"test \ntest  \ntest \n\" ")
              (send text remove-trailing-whitespace-all)
              (check-equal? (send text get-text)
-                           "\"test \ntest  \ntest \n\"")))
+                           " \"test \ntest  \ntest \n\"")))
