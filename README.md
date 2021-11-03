@@ -1,3 +1,9 @@
+Alternatives
+============
+
+Check out <https://github.com/sorawee/fmt> for a similar project that is aimed
+at having more features and extensibility.
+
 raco-format
 ===========
 
